@@ -70,3 +70,12 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+# Project Specific
+# =========================
+
+/GoogleCardBoardTest/Library
+/PrimitiveObjectManipulation/Library
+/UnityRandomGeneration/Library
+ 
