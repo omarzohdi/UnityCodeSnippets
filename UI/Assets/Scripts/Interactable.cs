@@ -12,9 +12,18 @@ public class Interactable : MonoBehaviour {
     }
 
     public Action[] options;
+    public string title;
+
+    void Start()
+    {
+        if (title.Length == 0 || title == null)
+        {
+            title = gameObject.name;
+        }
+    }
 
 	void OnMouseDown()
     {
-        RadialMenuSpawner.instance.SpawnMenu();
+        RadialMenuSpawner.instance.SpawnMenu(this);
     }
 }
