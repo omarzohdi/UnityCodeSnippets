@@ -13,9 +13,16 @@ public class RadialMenuFactories : MonoBehaviour
         return newMenu;
     }
 
-    public static RadialButton CreateRadialButton ()
+    public static RadialButton CreateRadialButton (Action action, RadialMenu menu)
     {
-        return null;
+        RadialButton newButton = Instantiate(UIManager.Instance.RadialButtonPrefab) as RadialButton;
+        newButton.transform.SetParent(menu.transform, false);
+
+        newButton.circle.color = action.color;
+        newButton.icon.sprite = action.sprite;
+        newButton.title = action.title;
+
+        return newButton;
     }
 
 }

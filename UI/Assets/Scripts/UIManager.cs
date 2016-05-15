@@ -67,7 +67,7 @@ public class UIManager : MonoBehaviour {
     public GameObject radMenuCanvas;
     public RadialButton RadialButtonPrefab;
     public RadialMenu RadialMenuPrefab;
-
+    private GameObject radialMenuObject;
 
     private void SetupRadialMenuCanvas ()
     {
@@ -83,6 +83,11 @@ public class UIManager : MonoBehaviour {
     public void SpawnRadialMenu(Interactable menuOptions)
     {
         radMenuCanvas.GetComponent<RadialMenuSpawner>().SpawnMenu(menuOptions);
+    }
+
+    public void KillRadialMenu ()
+    {
+        radMenuCanvas.GetComponent<RadialMenuSpawner>().KillMenu();
     }
     #endregion
 

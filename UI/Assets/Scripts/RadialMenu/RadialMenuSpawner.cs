@@ -8,8 +8,16 @@ public class RadialMenuSpawner : MonoBehaviour {
 
     public void SpawnMenu(Interactable Options)
     {
-        currMenu = RadialMenuFactories.CreateRadialMenu(Options.title);
-        currMenu.SpawnButtons(Options);
+        if (currMenu == null)
+        { 
+            currMenu = RadialMenuFactories.CreateRadialMenu(Options.title);
+            currMenu.SpawnButtons(Options);
+        }
+    }
+
+    public void KillMenu ()
+    {
+        currMenu.Destroy();
     }
 
 }

@@ -9,27 +9,29 @@ public class RadialButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public Image circle;
     public Image icon;
     public string title;
-    public RadialMenu myMenu; //not sure I need a ref back to the menu (it's technically a parent anyway)
 
-    Color defaultColor;
+    private RadialMenu parentmenu;
+    private Color defaultColor;
 
-    public float speed = 8f;    //animation speed
-
-    public void SelectAction ()
+    public void Start()
+    {
+        parentmenu = this.transform.parent.GetComponent<RadialMenu>();
+        defaultColor = circle.color;
+    }
+    public virtual void SelectAction ()
     {
         Debug.Log("Action is in Effect");
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        myMenu.selected = this;
-        defaultColor = circle.color;
+        parentmenu.selected = this;
         circle.color = Color.white;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        myMenu.selected = null;
+        parentmenu.selected = null;
         circle.color = defaultColor;
     }
 }

@@ -8,40 +8,30 @@ public class RadialMenu : MonoBehaviour {
     public RadialButton selected;
     public Text label;
 
-    private Interactable GameObjectRef;
-
     private List<GameObject> buttonList;
+    private bool IntiComplete = false;
 
-    // Use this for initialization
     public void SpawnButtons(Interactable obj)
     {
-        GameObjectRef = obj;
         StartCoroutine(AnimateButtons(obj));
     }
 
     IEnumerator AnimateButtons(Interactable obj)
     {
+        
         buttonList = new List<GameObject>();
 
         for (int i = 0; i < obj.options.Length; ++i)
         {
-            RadialButton newButton = Instantiate(UIManager.Instance.RadialButtonPrefab) as RadialButton;
-            newButton.transform.SetParent(transform, false);
+            RadialButton CurrentButton = RadialMenuFactories.CreateRadialButton(obj.options[i],this);
+            buttonList.Add(CurrentButton.gameObject);
 
-            float theta = (2 * Mathf.PI / obj.options.Length) * i;
-            float xpos = Mathf.Sin(theta);
-            float ypos = Mathf.Cos(theta);
-            newButton.transform.localPosition = new Vector3(xpos, ypos, 0f) * 100f;
-
-            newButton.circle.color = obj.options[i].color;
-            newButton.icon.sprite = obj.options[i].sprite;
-            newButton.title = obj.options[i].title;
-            newButton.myMenu = this;
-
-            buttonList.Add(newButton.gameObject);
+            CurrentButton.transform.localPosition = HelperRadialMenu.GetNextButtonPosition(i, obj.options.Length);
 
             yield return new WaitForSeconds(0.06f);
         }
+
+        IntiComplete = true;
     }
 
     void Update()
@@ -52,25 +42,25 @@ public class RadialMenu : MonoBehaviour {
             {
                 selected.SelectAction();
             }
-
-            StartCoroutine(DestoryButtons());
         }
     }
-
-
-    void OnDestroy()
+   
+    public void Destroy()
     {
-        
+        StartCoroutine(DestoryButtons());
     }
 
     IEnumerator DestoryButtons()
     {
+        while (!IntiComplete)
+            yield return new WaitForSeconds(0.06f);
+
         foreach (GameObject button in buttonList)
         {
             button.GetComponent<Animator>().SetTrigger("hide");
             yield return new WaitForSeconds(0.06f);
         }
+        yield return new WaitForSeconds(0.10f);
         Destroy(gameObject);
-
     }
 }

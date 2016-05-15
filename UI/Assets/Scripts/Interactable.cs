@@ -8,6 +8,8 @@ public class Action
     public Sprite sprite;
     public string title;
 }
+
+[RequireComponent(typeof(Animator))]
 public class Interactable : MonoBehaviour {
     
     public Action[] options;
@@ -24,5 +26,8 @@ public class Interactable : MonoBehaviour {
         UIManager.Instance.SpawnRadialMenu(this);
     }
 
-    void OnMouseUp() { }
+    void OnMouseUp()
+    {
+        UIManager.Instance.KillRadialMenu();
+    }
 }
