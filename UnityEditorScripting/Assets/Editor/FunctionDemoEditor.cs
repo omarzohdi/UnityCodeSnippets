@@ -25,7 +25,7 @@ public class FunctionDemoEditor : Editor
 	
 	public override void OnInspectorGUI()
 	{
-		FunctionDemo obj = target as FunctionDemo;
+        FunctionDemo obj = target as FunctionDemo;
 		
 		if (obj != null)
 		{
