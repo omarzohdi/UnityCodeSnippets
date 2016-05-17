@@ -15,7 +15,10 @@ public class FunctionDemo : MonoBehaviour
 	
 	void Update()
 	{
-		
+
+        Component x = (Component)this;
+
+            	
 	}
 	
 	void Foo()

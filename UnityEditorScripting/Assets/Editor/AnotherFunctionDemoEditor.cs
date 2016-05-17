@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Linq;
+using System.Reflection;
 using System.Collections;
 
 [CustomEditor(typeof(AnotherFunctionDemo))]
 public class AnotherFunctionDemoEditor : Editor
 {
-    private SerializedObject m_Object;
+    string[] ignoreMethods = new string[] { "Start", "Update" };
 
+
+
+    private SerializedObject m_Object;
     private SerializedProperty m_test;
 
     public void OnEnable()
@@ -20,21 +25,38 @@ public class AnotherFunctionDemoEditor : Editor
         m_Object.Update();
         
         EditorGUILayout.PropertyField(m_test);
+      
+        //Get the value inside the Property and Cast it to a GameObject
+        GameObject selectedObject = (GameObject) m_test.objectReferenceValue;
         
-        /*
-        Component[] components = Selection.activeGameObject.GetComponents<Component>() as Component[];
-        //If the length of components is > 0 (always WILL be, since every GameObject is
-        //guarenteed to have a Transform Component at the very minimum
-        if (components.Length > 0)
+        //Get All Components inside the GameObject
+        Component[] components = selectedObject.GetComponents<Component>() as Component[];
+
+        //this will always be more than 0 (transform) but maybe limit it to user scripts only (is it even possible?)
+        if (components.Length > 0) 
         {
-            //Print all the components to console
             foreach (Component component in components)
-                Debug.Log(component);
-            //Set the current selection to the components
-            Selection.objects = (Object[])components;
-        }*/
+            {
+                //Debug.Log(component.gameObject.name);
+
+                string[] methods;
+
+                methods = component.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public) // Instance methods, both public and private/protected
+                        .Where(x => x.DeclaringType == component.GetType())
+                        .Where(x => x.GetParameters().Length == 0) // Make sure we only get methods with zero argumenrts
+                        .Where(x => !ignoreMethods.Any(n => n == x.Name)) // Don't list methods in the ignoreMethods array (so we can exclude Unity specific methods, etc.)
+                        .Select(x => x.Name)
+                        .ToArray();
+
+             /*   foreach(string s in methods)
+                    Debug.Log(s);*/
 
 
-        m_Object.ApplyModifiedProperties();
+
+            }
+        }
+
+       m_Object.ApplyModifiedProperties();
     }
+
 }
