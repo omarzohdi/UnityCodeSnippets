@@ -23,7 +23,7 @@ public class FunctionDemo : MonoBehaviour
 	
 	void Foo()
 	{
-		Debug.Log("Foo");
+		Debug.Log("Foo - Foo");
 	}
 	
 	void Bar()

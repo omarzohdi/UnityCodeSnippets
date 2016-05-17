@@ -4,15 +4,18 @@ using System.Collections;
 
 public class AnotherFunctionDemo : MonoBehaviour {
 
-    public GameObject test;
-    
-    void Start()
-    {
-   
-    }
+	public GameObject selgameobject;
+	public Component comp;
+	public string function;
 
-    // Update is called once per frame
-    void Update () {
+	void Start()
+	{
+        selgameobject.SendMessage(function);
+	}
+
+	// Update is called once per frame
+	void Update ()
+	{
 	
 	}
 }
