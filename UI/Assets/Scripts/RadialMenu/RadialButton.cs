@@ -13,14 +13,19 @@ public class RadialButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private RadialMenu parentmenu;
     private Color defaultColor;
 
+	[HideInInspector]
+	public delegate void ActionDelegate();
+	public ActionDelegate ExecuteAction;
+
+	
     public void Start()
     {
         parentmenu = this.transform.parent.GetComponent<RadialMenu>();
         defaultColor = circle.color;
     }
-    public virtual void SelectAction ()
+    public void SelectAction ()
     {
-        Debug.Log("Action is in Effect");
+		this.ExecuteAction();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

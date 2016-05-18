@@ -1,12 +1,32 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using System.Collections;
 
 [System.Serializable]    //make editable in inspector
-public class Action
+public class Action: IEventSystemHandler
 {
+	[System.Serializable]  
+	public class ActionTrigger : UnityEvent {}
+
     public Color color;
     public Sprite sprite;
     public string title;
+	public bool triggered;
+	public bool triggerOnce;
+
+	[SerializeField]
+	private ActionTrigger afterTrigger = new ActionTrigger();
+	
+	public void ExecuteAction()
+	{
+		if (!triggered)
+		{
+			afterTrigger.Invoke();
+			if (triggerOnce) { triggered = true; }
+		}
+	}
 }
 
 [RequireComponent(typeof(Animator))]

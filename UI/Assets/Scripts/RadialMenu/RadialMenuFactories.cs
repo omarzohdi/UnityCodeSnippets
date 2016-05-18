@@ -18,6 +18,7 @@ public class RadialMenuFactories : MonoBehaviour
         RadialButton newButton = Instantiate(UIManager.Instance.RadialButtonPrefab) as RadialButton;
         newButton.transform.SetParent(menu.transform, false);
 
+		newButton.ExecuteAction = action.ExecuteAction;
         newButton.circle.color = action.color;
         newButton.icon.sprite = action.sprite;
         newButton.title = action.title;
