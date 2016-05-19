@@ -25,9 +25,6 @@ public class IntroScreenManager : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        LevelLoading = SceneManager.LoadSceneAsync("RadialMenuCleanUp", LoadSceneMode.Additive);
-        LevelLoading.allowSceneActivation = false;
-
         BgAnimIsPlaying = true;
         TitleAnimIsPlaying = true;
         StitleAnimIsPlaying = true;
@@ -39,45 +36,66 @@ public class IntroScreenManager : MonoBehaviour
         IntroDone = false;
 
         StartCoroutine(LoadLevel());
-    }
-
+        
+    }    
+    
     // Update is called once per frame
     IEnumerator LoadLevel()
     {
+        Debug.Log("LoadLevel()");
 
-        yield return new WaitForSeconds(SubTitleAnimator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds(5);
 
-        bool firstrun = true;
+        LevelLoading = SceneManager.LoadSceneAsync("RadialMenuCleanUp", LoadSceneMode.Additive);
 
         while (!IntroDone)
         {
             if (LevelLoading.isDone)
             {
-                TitleAnimator.SetTrigger("LoadingDone");
-                SubTitleAnimator.SetTrigger("LoadingDone");
+                StartCoroutine(StartFadeOut());
+                IntroDone = true;
+            }
+            yield return new WaitForSeconds(2);
+        }
+        
+        yield return null;
+    }
 
-                if (firstrun)
-                {
-                    yield return new WaitForSeconds(2);
-                    firstrun = false;
-                }
-               
-                TitleAnimIsPlaying = TitleAnimator.GetCurrentAnimatorStateInfo(0).IsName("FadeOut_UI");
-                StitleAnimIsPlaying = SubTitleAnimator.GetCurrentAnimatorStateInfo(0).IsName("FadeOut_UI");
+    IEnumerator StartFadeOut()
+    {
+        TitleAnimator.SetTrigger("LoadingDone");
+        SubTitleAnimator.SetTrigger("LoadingDone");
 
-                if (!TitleAnimIsPlaying && !StitleAnimIsPlaying)
-                {
-                    BackGroundAnimator.SetTrigger("LoadingDone");
-                    BgAnimIsPlaying = BackGroundAnimator.GetCurrentAnimatorStateInfo(0).IsName("FadeOutBackground_UI");
+        TitleAnimIsPlaying = TitleAnimator.GetCurrentAnimatorStateInfo(0).IsName("FadeOut_UI");
+        StitleAnimIsPlaying = SubTitleAnimator.GetCurrentAnimatorStateInfo(0).IsName("FadeOut_UI");
 
-                    if (BgAnimIsPlaying == false)
-                    {
-                        SceneManager.UnloadScene(SceneManager.GetActiveScene().buildIndex);
-                        SceneManager.SetActiveScene(SceneManager.GetSceneByName("RadialMenuCleanUp"));
-                        IntroDone = true;
-                    }
-                }
+        if (!TitleAnimIsPlaying && !StitleAnimIsPlaying)
+        {
+            StartCoroutine(SwitchLevel());
+        }
+
+        yield return null;
+    }
+
+    IEnumerator SwitchLevel()
+    {
+        bool fadingdone = false;
+        BackGroundAnimator.SetTrigger("LoadingDone");
+
+        while (!fadingdone)
+        {
+            yield return new WaitForSeconds(1);
+
+            BgAnimIsPlaying = BackGroundAnimator.GetCurrentAnimatorStateInfo(0).IsName("FadeOutBackground_UI");
+
+            if (!BgAnimIsPlaying)
+            {
+                SceneManager.UnloadScene(SceneManager.GetActiveScene().buildIndex);
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName("RadialMenuCleanUp"));
+                fadingdone = true;
             }
         }
+
+        yield return null;
     }
 }
